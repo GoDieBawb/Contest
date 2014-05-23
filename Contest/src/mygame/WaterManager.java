@@ -43,9 +43,8 @@ public class WaterManager extends AbstractAppState {
     this.assetManager = this.app.getAssetManager();
     this.player       = this.stateManager.getState(PlayerManager.class).player;
     this.fireNode     = this.stateManager.getState(FireManager.class).fireNode;
-    this.physics      = new BulletAppState();
+    this.physics      = stateManager.getState(SceneManager.class).physics;
     this.waterNode    = new Node();
-    stateManager.attach(physics);
     this.app.getRootNode().attachChild(waterNode);
     }
   

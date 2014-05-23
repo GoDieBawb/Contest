@@ -4,6 +4,7 @@
  */
 package mygame;
 
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.scene.Node;
 
 /**
@@ -13,4 +14,6 @@ import com.jme3.scene.Node;
 public class Player extends Node {
   public boolean isDead;
   public int     score;
+  public BetterCharacterControl playerPhys;
+  public Node model;
   }

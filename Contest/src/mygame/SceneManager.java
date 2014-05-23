@@ -10,6 +10,8 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
@@ -25,6 +27,7 @@ public class SceneManager extends AbstractAppState {
   private AssetManager      assetManager;
   public  Node              scene;
   private Node              rootNode;
+  public  BulletAppState    physics;
   
   @Override
   public void initialize(AppStateManager stateManager, Application app){
@@ -32,12 +35,17 @@ public class SceneManager extends AbstractAppState {
     this.app          = (SimpleApplication) app;
     this.assetManager = this.app.getAssetManager();
     this.rootNode     = this.app.getRootNode();
+    this.physics      = new BulletAppState();
+    stateManager.attach(physics);
     initBuilding();
     }
   
   private void initBuilding() {
-    scene        = new Node();
-    scene        = (Node) assetManager.loadModel("Models/Building/Building.j3o");
+    scene            = new Node();
+    scene            = (Node) assetManager.loadModel("Models/Building/Building.j3o");
+    RigidBodyControl scenePhys = new RigidBodyControl(0f);
+    scene.addControl(scenePhys);
+    physics.getPhysicsSpace().add(scenePhys);
     rootNode.attachChild(scene);
     System.out.println("Building initialized: " + scene.getChildren());
     initPillarMaterials();
