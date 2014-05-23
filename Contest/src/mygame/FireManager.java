@@ -47,8 +47,8 @@ public class FireManager extends AbstractAppState {
   private void createFire(){
     Fire fire      = new Fire();
     fire.setName("Fire");
-    Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    mat.setColor("Color", ColorRGBA.Orange);
+    Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    mat.setTexture("Texture", assetManager.loadTexture("Textures/Fire.png"));
     fire.health  = 10;
     ParticleEmitter firePart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     firePart.setMaterial(mat);

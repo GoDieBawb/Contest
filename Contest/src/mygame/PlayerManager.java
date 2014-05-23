@@ -11,6 +11,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 /**
  *
@@ -37,10 +39,14 @@ public class PlayerManager extends AbstractAppState {
   private void initPlayer(){
     player            = new Player();
     player.isDead     =  true;
-    player.playerPhys = new BetterCharacterControl(1f, 5f, 1f);
+    player.model      = new Node();
+    player.playerPhys = new BetterCharacterControl(1f, 2.5f, 1f);
+    player.attachChild(player.model);
     player.addControl(player.playerPhys);
     this.app.getRootNode().attachChild(player);
+    player.model.setLocalTranslation(0f, 2.5f, 0f);
     physics.getPhysicsSpace().add(player.playerPhys);
+    player.playerPhys.warp(new Vector3f(15f, 5f, 15f));
     }
   
   }

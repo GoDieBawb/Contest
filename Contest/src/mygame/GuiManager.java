@@ -73,10 +73,10 @@ public class GuiManager extends AbstractAppState {
     @Override
       public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
         startButton.hide();
+        inputManager.setCursorVisible(false);
+        stateManager.getState(CameraManager.class).cam.setDragToRotate(false);
         player.isDead = false;
         player.score  = 0;
-        flyCam.setEnabled(true);
-        inputManager.setCursorVisible(false);
         }
       };
     
@@ -97,7 +97,8 @@ public class GuiManager extends AbstractAppState {
     }
   
   public void showStartButton(){
-    inputManager.setCursorVisible(false);
+    inputManager.setCursorVisible(true);
+    stateManager.getState(CameraManager.class).cam.setDragToRotate(true);
     startButton.show();
     }
   

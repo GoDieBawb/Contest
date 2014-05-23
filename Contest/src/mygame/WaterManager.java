@@ -54,10 +54,8 @@ public class WaterManager extends AbstractAppState {
     Node             water     = new Node("Water");
     ParticleEmitter  waterPart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     RigidBodyControl waterPhys = new RigidBodyControl(1f);
-    Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    
-    
-    mat.setColor("Color", ColorRGBA.Blue);
+    Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    mat.setTexture("Texture", assetManager.loadTexture("Textures/Water.jpg"));
     
     Box b = new Box(.1f, .1f, .1f);
     Geometry geom = new Geometry("Water", b);
@@ -66,8 +64,8 @@ public class WaterManager extends AbstractAppState {
     waterPart.setMaterial(mat);
     waterPart.setImagesX(2); 
     waterPart.setImagesY(2);
-    waterPart.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));
-    waterPart.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+    waterPart.setEndColor(ColorRGBA.Cyan);
+    waterPart.setStartColor(ColorRGBA.Blue);
     waterPart.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
     waterPart.setStartSize(1.5f);
     waterPart.setEndSize(0.1f);

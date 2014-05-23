@@ -21,6 +21,7 @@ public class CameraManager extends AbstractAppState {
   private AppStateManager   stateManager;
   private AssetManager      assetManager;
   private Player            player;
+  public  ChaseCamera       cam;
   
   @Override
   public void initialize(AppStateManager stateManager, Application app){
@@ -33,7 +34,7 @@ public class CameraManager extends AbstractAppState {
     }
   
   public void initCamera(){
-    ChaseCamera cam = new ChaseCamera(this.app.getCamera(), player);
+    cam = new ChaseCamera(this.app.getCamera(), player.model, this.app.getInputManager());
     }
   
   }

@@ -12,9 +12,14 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
 /**
@@ -48,11 +53,19 @@ public class SceneManager extends AbstractAppState {
     physics.getPhysicsSpace().add(scenePhys);
     rootNode.attachChild(scene);
     System.out.println("Building initialized: " + scene.getChildren());
-    initPillarMaterials();
-    initBenchMaterials();
-    initWallMaterials();
-    initWindowMaterials();
-    initPlanterMaterials();
+    //initPillarMaterials();
+    //initBenchMaterials();
+    //initWallMaterials();
+    //initWindowMaterials();
+    //initPlanterMaterials();
+    AmbientLight al = new AmbientLight();
+    al.setColor(ColorRGBA.White.mult(1.3f));
+    rootNode.addLight(al);
+ 
+    DirectionalLight dl = new DirectionalLight();
+    dl.setColor(ColorRGBA.White);
+    dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
+    rootNode.addLight(dl);
     initFloorMaterials();
     }
   
@@ -60,6 +73,17 @@ public class SceneManager extends AbstractAppState {
     Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.LightGray);
     scene.getChild("Floor").setMaterial(mat);
+
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat1.setColor("Color", ColorRGBA.Green);
+    Box box = new Box(150, .2f, 150);
+    Geometry floor = new Geometry("the Floor", box);
+    floor.setMaterial(mat);
+    floor.setLocalTranslation(0, -.5f, 0);
+    RigidBodyControl floorPhys = new RigidBodyControl(0f);
+    floor.addControl(floorPhys);
+    scene.attachChild(floor);
+    physics.getPhysicsSpace().add(floorPhys);
     }
   
   private void initPillarMaterials(){
