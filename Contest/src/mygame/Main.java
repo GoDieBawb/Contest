@@ -17,9 +17,9 @@ public class Main extends SimpleApplication {
     public void simpleInitApp() {
     //Disable fly camera and attach all appstates
     this.getFlyByCamera().setEnabled(false);
-    //this.setDisplayFps(false);
-    //this.setDisplayStatView(false);
-    //this.setShowSettings(false);
+    this.setDisplayFps(false);
+    this.setDisplayStatView(false);
+    this.setShowSettings(false);
     this.inputManager.setCursorVisible(true);
     this.stateManager.attach(new SceneManager());
     this.stateManager.attach(new PlayerManager());
