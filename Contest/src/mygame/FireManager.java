@@ -63,6 +63,8 @@ public class FireManager extends AbstractAppState {
     firePart.setLowLife(1f);
     firePart.setHighLife(3f);
     firePart.getParticleInfluencer().setVelocityVariation(0.3f);
+    firePart.setParticlesPerSec(10);
+    firePart.setNumParticles(50);
     fire.attachChild(firePart);
     fireNode.attachChild(fire);
     placeFire(fire);
@@ -87,15 +89,18 @@ public class FireManager extends AbstractAppState {
       
       Fire currentFire = (Fire) fireNode.getChild(i);
       
-      if(currentFire.spreadTime > 1000) {
+      if(currentFire.spreadTime > 100) {
         
         Random rand            = new Random();
         int spreadChance       = rand.nextInt(5);
         currentFire.spreadTime = 0;
         
-        if (spreadChance == 1)
-        createFire();
-        System.out.println("Fire has spread: " + fireNode.getChildren().size());
+        if (spreadChance == 1) {
+          createFire();
+          System.out.println("Fire has spread: " + fireNode.getChildren().size());
+          } else {
+          System.out.println("Failed to spread: " + spreadChance);
+          }
         
         } else {
         currentFire.spreadTime++;

@@ -10,12 +10,14 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.input.FlyByCamera;
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
+import com.jme3.font.LineWrapMode;
 import com.jme3.input.InputManager;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
+import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.Screen;
 
 /**
@@ -27,13 +29,11 @@ public class GuiManager extends AbstractAppState {
   private SimpleApplication app;
   private AppStateManager   stateManager;
   private AssetManager      assetManager;
-  private ButtonAdapter     hoseButton;
   private ButtonAdapter     startButton;
+  private TextElement       scoreText;
   private BitmapFont        font;
-  private BitmapText        scoreText;
   private Screen            screen;
   private Player            player;
-  private FlyByCamera       flyCam;
   private InputManager      inputManager;
   
   @Override
@@ -43,7 +43,6 @@ public class GuiManager extends AbstractAppState {
     this.stateManager = this.app.getStateManager();
     this.assetManager = this.app.getAssetManager();
     this.player       = this.stateManager.getState(PlayerManager.class).player;
-    this.flyCam       = this.app.getFlyByCamera();
     this.inputManager = this.app.getInputManager();
     screen            = new Screen(app, "tonegod/gui/style/atlasdef/style_map.gui.xml");
     screen.setUseTextureAtlas(true,"tonegod/gui/style/atlasdef/atlas.png");
@@ -54,20 +53,6 @@ public class GuiManager extends AbstractAppState {
     }
   
   private void initHud(){
-
-    /**hoseButton = new ButtonAdapter(screen, "ChaseButton", new Vector2f(15, 15) ) {
-    @Override
-    public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-      stateManager.getState(WaterManager.class).createWater();
-      }
-    };
-
-    screen.addElement(hoseButton);
-    hoseButton.setDimensions(screen.getWidth()/10, screen.getWidth()/10);
-    hoseButton.setPosition(screen.getWidth() * .9f - hoseButton.getWidth()/2, screen.getHeight() * .1f - hoseButton.getHeight()/2);
-    hoseButton.setText("Hose");
-    hoseButton.setFont("Interface/Fonts/Impact.fnt");
-    **/
 
     startButton = new ButtonAdapter( screen, "StartButton", new Vector2f(15, 15) ) {
     @Override
@@ -89,11 +74,26 @@ public class GuiManager extends AbstractAppState {
   
   private void initScoreDisplay(){
     font              = this.assetManager.loadFont("Interface/Fonts/Impact.fnt");
-    scoreText         = new BitmapText(font, false);
-    scoreText.scale(.5f);
+    scoreText = new TextElement(screen, "ScoreText", Vector2f.ZERO, new Vector2f(300,50), font) {
+    @Override
+    public void onUpdate(float tpf) {  }
+    @Override
+    public void onEffectStart() {  }
+    @Override
+    public void onEffectStop() {  }
+    };
+    scoreText.setIsResizable(false);
+    scoreText.setIsMovable(false);
+    scoreText.setTextWrap(LineWrapMode.NoWrap);
+    scoreText.setTextVAlign(VAlign.Center);
+    scoreText.setTextAlign(Align.Center);
+    scoreText.setFontSize(18);
+    scoreText.setText("This is a sample TextElement");
+ 
+    screen.addElement(scoreText);
+    
     scoreText.setText("Fires Extinguished: " + player.score);
-    this.app.getGuiNode().attachChild(scoreText);
-    scoreText.setLocalTranslation(screen.getWidth() / 1.1f - scoreText.getLineWidth()/2, screen.getHeight() / 1.05f - scoreText.getLineHeight()/2, -1);
+    scoreText.setLocalTranslation(screen.getWidth() / 1.1f - scoreText.getWidth()/2, screen.getHeight() / 1.05f - scoreText.getHeight()/2, -1);
     }
   
   public void showStartButton(){

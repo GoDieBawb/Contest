@@ -74,6 +74,8 @@ public class WaterManager extends AbstractAppState {
     waterPart.setHighLife(3f);
     waterPart.getParticleInfluencer().setVelocityVariation(0.3f);
     waterPart.setInWorldSpace(false);
+    waterPart.setParticlesPerSec(10);
+    waterPart.setNumParticles(50);
 
     geom.addControl(waterPhys);
     water.attachChild(waterPart);
@@ -91,7 +93,9 @@ public class WaterManager extends AbstractAppState {
   public void update(float tpf){
     
     for(int i = 0; i < waterNode.getChildren().size(); i++) {
+ 
       Node currentWater = (Node) waterNode.getChild(i);
+      
       
       currentWater.getChild("Emitter").setLocalTranslation(currentWater.getChild("Water").getWorldTranslation());
       
@@ -117,7 +121,7 @@ public class WaterManager extends AbstractAppState {
         currentWater.removeFromParent();
         }
       
-      if (currentWater.getChild("Water").getLocalTranslation().y < -10){
+      if (currentWater.getChild("Water").getLocalTranslation().y < .5f){
         waterNode.detachChild(currentWater);
         }
       

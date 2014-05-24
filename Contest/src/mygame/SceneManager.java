@@ -12,7 +12,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -53,14 +52,11 @@ public class SceneManager extends AbstractAppState {
     physics.getPhysicsSpace().add(scenePhys);
     rootNode.attachChild(scene);
     System.out.println("Building initialized: " + scene.getChildren());
-    //initPillarMaterials();
-    //initBenchMaterials();
-    //initWallMaterials();
-    //initWindowMaterials();
-    //initPlanterMaterials();
-    AmbientLight al = new AmbientLight();
-    al.setColor(ColorRGBA.White.mult(1.3f));
-    rootNode.addLight(al);
+    initPillarMaterials();
+    initBenchMaterials();
+    initWallMaterials();
+    initWindowMaterials();
+    initPlanterMaterials();
  
     DirectionalLight dl = new DirectionalLight();
     dl.setColor(ColorRGBA.White);
@@ -78,7 +74,7 @@ public class SceneManager extends AbstractAppState {
     mat1.setColor("Color", ColorRGBA.Green);
     Box box = new Box(150, .2f, 150);
     Geometry floor = new Geometry("the Floor", box);
-    floor.setMaterial(mat);
+    floor.setMaterial(mat1);
     floor.setLocalTranslation(0, -.5f, 0);
     RigidBodyControl floorPhys = new RigidBodyControl(0f);
     floor.addControl(floorPhys);
