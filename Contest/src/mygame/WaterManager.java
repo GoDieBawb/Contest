@@ -48,23 +48,27 @@ public class WaterManager extends AbstractAppState {
     this.app.getRootNode().attachChild(waterNode);
     }
   
+  //Creates water on click
   public void createWater() {
-
+    //Checks to see if water may be created
     if (waterNode.getChildren().size() < 5 && !player.isDead){
+    
+    //Creates the water Object, emitter and material for the water
     Water            water     = new Water();
     ParticleEmitter  waterPart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     RigidBodyControl waterPhys = new RigidBodyControl(1f);
-    //Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    mat.setColor("Color", ColorRGBA.Blue);
-    //mat.setTexture("Texture", assetManager.loadTexture("Textures/Water.jpg"));
+    Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    mat.setTexture("Texture", assetManager.loadTexture("Textures/Water.jpg"));
     
+    //Creates the box to be launched
     Box b = new Box(.1f, .1f, .1f);
     Geometry geom = new Geometry("Water", b);
     geom.setMaterial(mat);
     
+    //Sets the water's creation time
     water.startTime = System.currentTimeMillis()/1000;
     
+    //Sets up the emitter details
     waterPart.setMaterial(mat);
     waterPart.setImagesX(2); 
     waterPart.setImagesY(2);
@@ -81,12 +85,16 @@ public class WaterManager extends AbstractAppState {
     waterPart.setParticlesPerSec(5);
     waterPart.setNumParticles(10);
 
+    //Puts together the water Node
     geom.addControl(waterPhys);
     water.attachChild(waterPart);
     water.attachChild(geom);
     waterNode.attachChild(water);
     
+    //Adds the water's physics tot he physics space
     physics.getPhysicsSpace().add(waterPhys);
+    
+    //Sets the waters location to the camera, and launches it in the camera's direction
     waterPhys.setPhysicsLocation(this.app.getCamera().getLocation());
     waterPhys.setLinearVelocity(this.app.getCamera().getDirection().mult(25));
     }
@@ -95,37 +103,41 @@ public class WaterManager extends AbstractAppState {
   
   @Override
   public void update(float tpf){
-    
+    //Iterates over the water Node
     for(int i = 0; i < waterNode.getChildren().size(); i++) {
  
       Water currentWater = (Water) waterNode.getChild(i);
       
-      
+      //constantly sets the water's emitter to its parent location
       currentWater.getChild("Emitter").setLocalTranslation(currentWater.getChild("Water").getWorldTranslation());
       
+      //Create collision for the currentWater to collide with the scene
       CollisionResults results = new CollisionResults();
       stateManager.getState(SceneManager.class).scene.collideWith(currentWater.getChild("Water").getWorldBound(), results);
        
+      //If there are results, make sure it's not with the floor or the "FuckPillar" which bugged me
       if (results.size() > 0 && !results.getCollision(0).getGeometry().getName().equals("Floor") && !results.getCollision(0).getGeometry().getName().equals("FuckPillar")) {
           
+        //Gets the spot in which the water hit the building
         Vector3f waterSpot = results.getCollision(0).getGeometry().getWorldTranslation();
+        
+        //Iterates over the fireNode
         for (int j = 0; j < fireNode.getChildren().size(); j++) {
           
           Fire currentFire = (Fire) fireNode.getChild(j);
           
+          //Checks to see if any fire was within range of the water and hurts the fire
           if (waterSpot.distance(currentFire.getLocalTranslation()) < 5) {
-            System.out.println("Hit fire: " +  currentFire.health);
             currentFire.health--;
-            } else {
-            System.out.println("Water has hit: " + results.getCollision(0).getGeometry().getParent().getName());
             }
           
           }
-        
+        //Removes the water due to hitting the building
         currentWater.removeFromParent();
         }
       
-      if (currentWater.getChild("Water").getLocalTranslation().y < -1f ^ System.currentTimeMillis()/1000 - currentWater.startTime > 5){
+      //Cleans up water if falls off map, or is stuck for too long
+      if (currentWater.getChild("Water").getLocalTranslation().y < -1f ^ System.currentTimeMillis()/1000 - currentWater.startTime > 3){
         waterNode.detachChild(currentWater);
         }
       

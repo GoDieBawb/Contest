@@ -44,16 +44,21 @@ public class FireManager extends AbstractAppState {
     rootNode.attachChild(fireNode);
     }
   
+  //Creates a new Fire
   private void createFire(){
+    //Crate the fire object  
     Fire fire      = new Fire();
     fire.setName("Fire");
-    //Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    mat.setColor("Color", ColorRGBA.Orange);
-    //mat.setTexture("Texture", assetManager.loadTexture("Textures/Fire.png"));
+    
+    //Create Particle textures
+    Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    mat.setTexture("Texture", assetManager.loadTexture("Textures/Fire.png"));
+    
+    //set fire health and spreadTimes
     fire.health  = 5;
     fire.spreadTime = System.currentTimeMillis()/1000;
     
+    //Creation of the fire particle emitter
     ParticleEmitter firePart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     firePart.setMaterial(mat);
     firePart.setImagesX(2); 
@@ -69,59 +74,70 @@ public class FireManager extends AbstractAppState {
     firePart.getParticleInfluencer().setVelocityVariation(0.3f);
     firePart.setParticlesPerSec(5);
     firePart.setNumParticles(10);
+    
+    //attaching the emitter to the fire and the fire to the fireNode
     fire.attachChild(firePart);
     fireNode.attachChild(fire);
+    
+    //Sends the fire to be randomly placed
     placeFire(fire);
     }
   
+  //Places the fire at a random window in the window Node
   private void placeFire(Fire fire){
     Random rand  = new Random();
     int fireSpot = rand.nextInt(windowNode.getChildren().size());
     fire.setLocalTranslation(windowNode.getChild(fireSpot).getLocalTranslation());
     }
   
+  //Fire Manager Update Logic
   @Override
   public void update(float tpf){
-    
+  //Make sure the player isn't dead  
   if (!player.isDead) {
-      
+    
+    //Must be a minimum of 5 fires  
     if (fireNode.getChildren().size() < 5) {
       createFire();
       }
     
+    //Iterate over each fire
     for (int i = 0; i < fireNode.getChildren().size(); i++) {
       
       Fire currentFire = (Fire) fireNode.getChild(i);
       
+      //Causes the fire to have a chance to spread every 5 seconds
       if(System.currentTimeMillis()/1000 - currentFire.spreadTime > 5) {
         
         Random rand            = new Random();
         int spreadChance       = rand.nextInt(5);
+        
+        //Reset the spread time to the current time to wait another 5 seconds
         currentFire.spreadTime = System.currentTimeMillis()/1000;
         
+        //If the random int equals one create a new fire
         if (spreadChance == 1) {
           createFire();
-          System.out.println("Fire has spread: " + fireNode.getChildren().size());
-          } else {
-          System.out.println("Failed to spread: " + spreadChance);
           }
         }
 
-      if (currentFire.health < 0) {
+      //If the fires health is less or equal to 0 remove the fire
+      if (currentFire.health <= 0) {
         player.score++;
         fireNode.detachChild(currentFire);
         System.out.println("Fire Removed");
         }
       }
 
+    //If there is more than 12 fires the player has lost the game
     if (fireNode.getChildren().size() > 12) {
+      //Set the player to dead  
       player.isDead =  true;
+      //Removes all Children from the fire and water nodes
       fireNode.detachAllChildren();
       stateManager.getState(WaterManager.class).waterNode.detachAllChildren();
-      
+      //Shows the start menu
       stateManager.getState(GuiManager.class).showStartButton();
-      this.app.getFlyByCamera().setEnabled(false);
-      System.out.println("You've died");
       }
 
     }

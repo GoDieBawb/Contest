@@ -1,7 +1,6 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.renderer.RenderManager;
 
 /**
  * test
@@ -16,6 +15,7 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+    //Disable fly camera and attach all appstates
     this.getFlyByCamera().setEnabled(false);
     //this.setDisplayFps(false);
     //this.setDisplayStatView(false);
@@ -28,15 +28,5 @@ public class Main extends SimpleApplication {
     this.stateManager.attach(new CameraManager());
     this.stateManager.attach(new GuiManager());
     this.stateManager.attach(new InteractionManager());
-    }
-
-    @Override
-    public void simpleUpdate(float tpf) {
-        //TODO: add update code
-    }
-
-    @Override
-    public void simpleRender(RenderManager rm) {
-        //TODO: add render code
     }
 }

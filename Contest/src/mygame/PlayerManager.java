@@ -36,9 +36,15 @@ public class PlayerManager extends AbstractAppState {
     initPlayer();
     }
   
+  //Creates the player
   private void initPlayer(){
+    //Create player object
     player            = new Player();
-    player.isDead     =  true;
+    
+    //Death set to true, for unstarted game
+    player.isDead     = true;
+  
+    //Create model and add physiscs
     player.model      = new Node();
     player.playerPhys = new BetterCharacterControl(1f, 2.5f, 1f);
     player.playerPhys.setGravity(new Vector3f(0, -50, 0));
@@ -47,6 +53,7 @@ public class PlayerManager extends AbstractAppState {
     this.app.getRootNode().attachChild(player);
     player.model.setLocalTranslation(0f, 2.5f, 0f);
     physics.getPhysicsSpace().add(player.playerPhys);
+    //Place player outside building via warp()
     player.playerPhys.warp(new Vector3f(15f, 5f, 15f));
     }
   

@@ -53,10 +53,11 @@ public class GuiManager extends AbstractAppState {
     }
   
   private void initHud(){
-
+    //Creates the start Button
     startButton = new ButtonAdapter( screen, "StartButton", new Vector2f(15, 15) ) {
     @Override
       public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+        //On click hide start menu, set invis cursor and proper camera, reset player
         startButton.hide();
         inputManager.setCursorVisible(false);
         stateManager.getState(CameraManager.class).cam.setDragToRotate(false);
@@ -65,6 +66,7 @@ public class GuiManager extends AbstractAppState {
         }
       };
     
+    //Sets up the start button details
     screen.addElement(startButton);
     startButton.setDimensions(screen.getWidth()/8, screen.getHeight()/10);
     startButton.setPosition(screen.getWidth() / 2 - startButton.getWidth()/2, screen.getHeight() / 2 - startButton.getHeight()/2);
@@ -72,6 +74,7 @@ public class GuiManager extends AbstractAppState {
     startButton.setFont("Interface/Fonts/Impact.fnt");
     }
   
+  //Sets up the score display
   private void initScoreDisplay(){
     font              = this.assetManager.loadFont("Interface/Fonts/Impact.fnt");
     scoreText = new TextElement(screen, "ScoreText", Vector2f.ZERO, new Vector2f(300,50), font) {
@@ -82,6 +85,8 @@ public class GuiManager extends AbstractAppState {
     @Override
     public void onEffectStop() {  }
     };
+    
+    //Sets up the details of the score display
     scoreText.setIsResizable(false);
     scoreText.setIsMovable(false);
     scoreText.setTextWrap(LineWrapMode.NoWrap);
@@ -90,22 +95,26 @@ public class GuiManager extends AbstractAppState {
     scoreText.setFontSize(18);
     scoreText.setText("This is a sample TextElement");
  
+    //Add the score display
     screen.addElement(scoreText);
     
     scoreText.setText("Fires Extinguished: " + player.score);
     scoreText.setLocalTranslation(screen.getWidth() / 1.1f - scoreText.getWidth()/1.8f, screen.getHeight() / 1.05f - scoreText.getHeight()/2, -1);
     }
   
+  //Shows the start button
   public void showStartButton(){
     inputManager.setCursorVisible(true);
     stateManager.getState(CameraManager.class).cam.setDragToRotate(true);
     startButton.show();
     }
   
+  //Updates the score display to the player's current score
   private void updateHud(){
     scoreText.setText("Fires Extinguished: " + player.score);
     }
   
+  //Update logic to update the score
   @Override
   public void update(float tpf){
     updateHud();

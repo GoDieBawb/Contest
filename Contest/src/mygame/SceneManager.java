@@ -12,10 +12,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -52,17 +50,13 @@ public class SceneManager extends AbstractAppState {
     scene.addControl(scenePhys);
     physics.getPhysicsSpace().add(scenePhys);
     rootNode.attachChild(scene);
-    System.out.println("Building initialized: " + scene.getChildren());
+    
+    //Initialize each of the nodes
     initPillarMaterials();
     initBenchMaterials();
     initWallMaterials();
     initWindowMaterials();
     initPlanterMaterials();
- 
-    DirectionalLight dl = new DirectionalLight();
-    dl.setColor(ColorRGBA.White);
-    dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
-    rootNode.addLight(dl);
     initFloorMaterials();
     }
   
@@ -71,18 +65,22 @@ public class SceneManager extends AbstractAppState {
     mat.setColor("Color", ColorRGBA.LightGray);
     scene.getChild("Floor").setMaterial(mat);
 
+    //Create nodes to be batched
     Node floorNode = (Node) scene.getChild("Floor");
     Node benchNode  = (Node) scene.getChild("BenchNode");
     Node planterNode  = (Node) scene.getChild("PlanterNode");
     
+    //Batch the node into one node
     Node optGeom = new Node();
     optGeom.attachChild(floorNode);
     optGeom.attachChild(benchNode);
     optGeom.attachChild(planterNode);
     
+    //Attach new batch to rootNode
     Node newGeom = GeometryBatchFactory.optimize(optGeom, false);
     rootNode.attachChild(newGeom);
     
+    //Create a lawn and add to physics
     Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat1.setColor("Color", ColorRGBA.Green);
     Box box = new Box(150, .2f, 150);
@@ -95,12 +93,14 @@ public class SceneManager extends AbstractAppState {
     physics.getPhysicsSpace().add(floorPhys);
     }
   
+  //Set the pillars to unshaded and wood
   private void initPillarMaterials(){
     Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.Brown);
     scene.getChild("PillarNode").setMaterial(mat);
     }
 
+   //Set the Walls to unshaded and Stone
   private void initWallMaterials(){
     Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     TextureKey key = new TextureKey("Textures/Plank.png", false);
@@ -109,12 +109,14 @@ public class SceneManager extends AbstractAppState {
     scene.getChild("WallNode").setMaterial(mat);
     }
   
+  //Set the Windows to unshaded and wood
   private void initWindowMaterials(){
     Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.Brown);
     scene.getChild("WindowNode").setMaterial(mat);
     }
 
+  //Sets the plants to unshaded and proper materials
   private void initPlanterMaterials(){
     Material mat1   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     Material mat2   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -133,8 +135,10 @@ public class SceneManager extends AbstractAppState {
     mat3.setTexture("ColorMap", tex3);
     mat4.setTexture("ColorMap", tex4);
     
+    //Gets the planter node for iteration
     Node planterNode = (Node) scene.getChild("PlanterNode");
     
+    //Iterates over each planter to set each material properly
     for (int i = 0; i < planterNode.getChildren().size(); i++) {
       Node currentPlant = (Node) planterNode.getChild(i);
       currentPlant.getChild(0).setMaterial(mat1);
@@ -144,6 +148,7 @@ public class SceneManager extends AbstractAppState {
       }
     }
 
+  //Set the benches to unshaded and Brown Color
   private void initBenchMaterials(){
     Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.Brown);

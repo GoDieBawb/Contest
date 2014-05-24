@@ -44,6 +44,7 @@ public class InteractionManager extends AbstractAppState implements ActionListen
     setUpKeys();
     }
   
+  //Sets up key listeners for the action listener
   private void setUpKeys(){
     inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
@@ -58,7 +59,7 @@ public class InteractionManager extends AbstractAppState implements ActionListen
     }
 
   public void onAction(String binding, boolean isPressed, float tpf) {
-  
+    //Spray water on click
     if (binding.equals("Click") && !isPressed) {
         
     stateManager.getState(WaterManager.class).createWater();

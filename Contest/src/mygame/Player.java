@@ -12,6 +12,7 @@ import com.jme3.scene.Node;
  * @author Bob
  */
 public class Player extends Node {
+  //Simple player object extends Node and just adds data
   public boolean isDead;
   public int     score;
   public BetterCharacterControl playerPhys;
