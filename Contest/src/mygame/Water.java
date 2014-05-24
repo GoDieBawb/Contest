@@ -10,8 +10,6 @@ import com.jme3.scene.Node;
  *
  * @author Bob
  */
-public class Fire extends Node {
-  public Node model;
-  public int  health;
-  public long spreadTime;
+public class Water extends Node {
+  public long startTime;
   }

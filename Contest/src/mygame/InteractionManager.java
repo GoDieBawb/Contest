@@ -31,7 +31,7 @@ public class InteractionManager extends AbstractAppState implements ActionListen
   private Vector3f walkDirection = new Vector3f();
   private Vector3f camDir        = new Vector3f();
   private Vector3f camLeft       = new Vector3f();
-  private boolean left = false, right = false, up = false, down = false;
+  private boolean left = false, right = false, up = false, down = false, click = false;
   
   @Override
   public void initialize(AppStateManager stateManager, Application app){
@@ -59,9 +59,9 @@ public class InteractionManager extends AbstractAppState implements ActionListen
 
   public void onAction(String binding, boolean isPressed, float tpf) {
   
-    if (binding.equals("Click")) {
-      stateManager.getState(WaterManager.class).createWater();
-      
+    if (binding.equals("Click") && !isPressed) {
+        
+    stateManager.getState(WaterManager.class).createWater();
 
     } else if (binding.equals("Left")) {
         

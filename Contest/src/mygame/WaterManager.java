@@ -32,7 +32,7 @@ public class WaterManager extends AbstractAppState {
   private AssetManager      assetManager;
   private Player            player;
   private BulletAppState    physics;
-  private Node              waterNode;
+  public  Node              waterNode;
   private Node              fireNode;
   
   @Override
@@ -50,16 +50,20 @@ public class WaterManager extends AbstractAppState {
   
   public void createWater() {
 
-    if (waterNode.getChildren().size() < 10 && !player.isDead){
-    Node             water     = new Node("Water");
+    if (waterNode.getChildren().size() < 5 && !player.isDead){
+    Water            water     = new Water();
     ParticleEmitter  waterPart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     RigidBodyControl waterPhys = new RigidBodyControl(1f);
-    Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    mat.setTexture("Texture", assetManager.loadTexture("Textures/Water.jpg"));
+    //Material         mat       = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat.setColor("Color", ColorRGBA.Blue);
+    //mat.setTexture("Texture", assetManager.loadTexture("Textures/Water.jpg"));
     
     Box b = new Box(.1f, .1f, .1f);
     Geometry geom = new Geometry("Water", b);
     geom.setMaterial(mat);
+    
+    water.startTime = System.currentTimeMillis()/1000;
     
     waterPart.setMaterial(mat);
     waterPart.setImagesX(2); 
@@ -74,8 +78,8 @@ public class WaterManager extends AbstractAppState {
     waterPart.setHighLife(3f);
     waterPart.getParticleInfluencer().setVelocityVariation(0.3f);
     waterPart.setInWorldSpace(false);
-    waterPart.setParticlesPerSec(10);
-    waterPart.setNumParticles(50);
+    waterPart.setParticlesPerSec(5);
+    waterPart.setNumParticles(10);
 
     geom.addControl(waterPhys);
     water.attachChild(waterPart);
@@ -94,7 +98,7 @@ public class WaterManager extends AbstractAppState {
     
     for(int i = 0; i < waterNode.getChildren().size(); i++) {
  
-      Node currentWater = (Node) waterNode.getChild(i);
+      Water currentWater = (Water) waterNode.getChild(i);
       
       
       currentWater.getChild("Emitter").setLocalTranslation(currentWater.getChild("Water").getWorldTranslation());
@@ -102,10 +106,9 @@ public class WaterManager extends AbstractAppState {
       CollisionResults results = new CollisionResults();
       stateManager.getState(SceneManager.class).scene.collideWith(currentWater.getChild("Water").getWorldBound(), results);
        
-      if (results.size() > 0 && !results.getCollision(0).getGeometry().getName().equals("Floor")) {
+      if (results.size() > 0 && !results.getCollision(0).getGeometry().getName().equals("Floor") && !results.getCollision(0).getGeometry().getName().equals("FuckPillar")) {
           
         Vector3f waterSpot = results.getCollision(0).getGeometry().getWorldTranslation();
-        
         for (int j = 0; j < fireNode.getChildren().size(); j++) {
           
           Fire currentFire = (Fire) fireNode.getChild(j);
@@ -114,6 +117,7 @@ public class WaterManager extends AbstractAppState {
             System.out.println("Hit fire: " +  currentFire.health);
             currentFire.health--;
             } else {
+            System.out.println("Water has hit: " + results.getCollision(0).getGeometry().getParent().getName());
             }
           
           }
@@ -121,7 +125,7 @@ public class WaterManager extends AbstractAppState {
         currentWater.removeFromParent();
         }
       
-      if (currentWater.getChild("Water").getLocalTranslation().y < .5f){
+      if (currentWater.getChild("Water").getLocalTranslation().y < -1f ^ System.currentTimeMillis()/1000 - currentWater.startTime > 5){
         waterNode.detachChild(currentWater);
         }
       

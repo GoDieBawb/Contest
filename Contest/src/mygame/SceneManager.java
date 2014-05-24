@@ -20,6 +20,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import jme3tools.optimize.GeometryBatchFactory;
 
 /**
  *
@@ -70,6 +71,18 @@ public class SceneManager extends AbstractAppState {
     mat.setColor("Color", ColorRGBA.LightGray);
     scene.getChild("Floor").setMaterial(mat);
 
+    Node floorNode = (Node) scene.getChild("Floor");
+    Node benchNode  = (Node) scene.getChild("BenchNode");
+    Node planterNode  = (Node) scene.getChild("PlanterNode");
+    
+    Node optGeom = new Node();
+    optGeom.attachChild(floorNode);
+    optGeom.attachChild(benchNode);
+    optGeom.attachChild(planterNode);
+    
+    Node newGeom = GeometryBatchFactory.optimize(optGeom, false);
+    rootNode.attachChild(newGeom);
+    
     Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     mat1.setColor("Color", ColorRGBA.Green);
     Box box = new Box(150, .2f, 150);

@@ -93,7 +93,7 @@ public class GuiManager extends AbstractAppState {
     screen.addElement(scoreText);
     
     scoreText.setText("Fires Extinguished: " + player.score);
-    scoreText.setLocalTranslation(screen.getWidth() / 1.1f - scoreText.getWidth()/2, screen.getHeight() / 1.05f - scoreText.getHeight()/2, -1);
+    scoreText.setLocalTranslation(screen.getWidth() / 1.1f - scoreText.getWidth()/1.8f, screen.getHeight() / 1.05f - scoreText.getHeight()/2, -1);
     }
   
   public void showStartButton(){

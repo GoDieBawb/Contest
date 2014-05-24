@@ -47,9 +47,13 @@ public class FireManager extends AbstractAppState {
   private void createFire(){
     Fire fire      = new Fire();
     fire.setName("Fire");
-    Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    mat.setTexture("Texture", assetManager.loadTexture("Textures/Fire.png"));
-    fire.health  = 10;
+    //Material mat   = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat.setColor("Color", ColorRGBA.Orange);
+    //mat.setTexture("Texture", assetManager.loadTexture("Textures/Fire.png"));
+    fire.health  = 5;
+    fire.spreadTime = System.currentTimeMillis()/1000;
+    
     ParticleEmitter firePart = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     firePart.setMaterial(mat);
     firePart.setImagesX(2); 
@@ -63,8 +67,8 @@ public class FireManager extends AbstractAppState {
     firePart.setLowLife(1f);
     firePart.setHighLife(3f);
     firePart.getParticleInfluencer().setVelocityVariation(0.3f);
-    firePart.setParticlesPerSec(10);
-    firePart.setNumParticles(50);
+    firePart.setParticlesPerSec(5);
+    firePart.setNumParticles(10);
     fire.attachChild(firePart);
     fireNode.attachChild(fire);
     placeFire(fire);
@@ -89,11 +93,11 @@ public class FireManager extends AbstractAppState {
       
       Fire currentFire = (Fire) fireNode.getChild(i);
       
-      if(currentFire.spreadTime > 100) {
+      if(System.currentTimeMillis()/1000 - currentFire.spreadTime > 5) {
         
         Random rand            = new Random();
         int spreadChance       = rand.nextInt(5);
-        currentFire.spreadTime = 0;
+        currentFire.spreadTime = System.currentTimeMillis()/1000;
         
         if (spreadChance == 1) {
           createFire();
@@ -101,22 +105,20 @@ public class FireManager extends AbstractAppState {
           } else {
           System.out.println("Failed to spread: " + spreadChance);
           }
-        
-        } else {
-        currentFire.spreadTime++;
         }
-      
+
       if (currentFire.health < 0) {
         player.score++;
         fireNode.detachChild(currentFire);
         System.out.println("Fire Removed");
         }
-      
       }
 
     if (fireNode.getChildren().size() > 12) {
       player.isDead =  true;
       fireNode.detachAllChildren();
+      stateManager.getState(WaterManager.class).waterNode.detachAllChildren();
+      
       stateManager.getState(GuiManager.class).showStartButton();
       this.app.getFlyByCamera().setEnabled(false);
       System.out.println("You've died");
