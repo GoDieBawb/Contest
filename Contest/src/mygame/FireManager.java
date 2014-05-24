@@ -137,7 +137,7 @@ public class FireManager extends AbstractAppState {
       fireNode.detachAllChildren();
       stateManager.getState(WaterManager.class).waterNode.detachAllChildren();
       //Shows the start menu
-      stateManager.getState(GuiManager.class).showStartButton("Play Again", "You Lose", "You needed " + String.valueOf(100 - player.score) + " more fires");
+      stateManager.getState(GuiManager.class).showStartButton("Play Again", "You Lost The Building", "You needed " + String.valueOf(100 - player.score) + " more fires");
       }
 
     if (player.score > 99) {
@@ -147,7 +147,7 @@ public class FireManager extends AbstractAppState {
       fireNode.detachAllChildren();
       stateManager.getState(WaterManager.class).waterNode.detachAllChildren();
       //Shows the start menu
-      stateManager.getState(GuiManager.class).showStartButton("Play Again", "Fire Extinguished!", "Good Job!");
+      stateManager.getState(GuiManager.class).showStartButton("Play Again", "Building Saved!", "Good Job!");
       }
 
     }

@@ -51,7 +51,7 @@ public class WaterManager extends AbstractAppState {
   //Creates water on click
   public void createWater() {
     //Checks to see if water may be created
-    if (waterNode.getChildren().size() < 5 && !player.isDead){
+    if (waterNode.getChildren().size() < 8 && !player.isDead){
     
     //Creates the water Object, emitter and material for the water
     Water            water     = new Water();
