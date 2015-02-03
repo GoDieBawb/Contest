@@ -9,6 +9,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.font.BitmapFont.VAlign;
@@ -18,8 +19,10 @@ import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.texture.Texture;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.extras.Indicator;
+import tonegod.gui.controls.extras.android.Joystick;
 import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
@@ -41,6 +44,7 @@ public class GuiManager extends AbstractAppState {
   private TextElement       insText;
   private Indicator         fireInd;
   private Indicator         waterInd;
+  private Joystick          stick;
   private BitmapFont        font;
   private Screen            screen;
   private Player            player;
@@ -63,6 +67,7 @@ public class GuiManager extends AbstractAppState {
     initScoreDisplay();
     initFireLevel();
     initWaterLevel();
+    initJoyStick();
     }
   
   private void initHud(){
@@ -210,6 +215,40 @@ public class GuiManager extends AbstractAppState {
     fireInd.setDimensions(150, 30);
     screen.addElement(fireInd);
     }
+  
+  private void initJoyStick(){
+    stick = new Joystick(screen, Vector2f.ZERO, (int)10) {
+    @Override
+    public void onUpdate(float tpf, float deltaX, float deltaY) {
+        float dzVal = 0.002f;  // Dead zone threshold
+            if (deltaX < -dzVal) {
+                stateManager.getState(InteractionManager.class).left = true;
+                stateManager.getState(InteractionManager.class).right = false;
+            } else if (deltaX > dzVal) {
+                stateManager.getState(InteractionManager.class).left = false;
+                stateManager.getState(InteractionManager.class).right = true;
+            } else {
+                stateManager.getState(InteractionManager.class).left = false;
+                stateManager.getState(InteractionManager.class).right = false;
+            }
+          }
+        };
+      // getGUIRegion returns region info “x=0|y=0|w=50|h=50″, etc
+      TextureKey key = new TextureKey("Textures/Fire.png");
+      Texture tex = assetManager.loadTexture(key);
+      stick.setTextureAtlasImage(tex, "x=20|y=20|w=120|h=35");
+      stick.getThumb().setTextureAtlasImage(tex, "x=20|y=20|w=120|h=35");
+      // Make the Joystick semi-transparent
+      stick.getElementMaterial().setColor("Color", new ColorRGBA(1,1,1,0.4f));
+      stick.getThumb().getElementMaterial().setColor("Color", new ColorRGBA(1,1,1,0.4f));
+      screen.addElement(stick, true);
+      stick.setPosition(screen.getWidth()/2 -  stick.getWidth()/2, screen.getHeight()/2 -  stick.getHeight()/2);
+      // Add some fancy effects
+      Effect fxIn = new Effect(Effect.EffectType.FadeIn, Effect.EffectEvent.Show,.5f);
+      stick.addEffect(fxIn);
+      Effect fxOut = new Effect(Effect.EffectType.FadeOut, Effect.EffectEvent.Hide,.5f);
+      stick.addEffect(fxOut);
+      }
 
   private void initWaterLevel(){
     waterInd = new Indicator(

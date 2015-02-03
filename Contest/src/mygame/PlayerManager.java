@@ -46,8 +46,8 @@ public class PlayerManager extends AbstractAppState {
   
     //Create model and add physiscs
     player.model      = new Node();
-    player.playerPhys = new BetterCharacterControl(1f, 2.5f, 1f);
-    player.playerPhys.setGravity(new Vector3f(0, -50, 0));
+    player.playerPhys = new BetterCharacterControl(1f, 2.5f, 500f);
+    //player.playerPhys.setGravity(new Vector3f(0, -9.81f, 0));
     player.attachChild(player.model);
     player.addControl(player.playerPhys);
     this.app.getRootNode().attachChild(player);
